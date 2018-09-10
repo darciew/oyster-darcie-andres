@@ -12,6 +12,15 @@ describe Oystercard do
       expect(Oystercard::MAXIMUM_LIMIT).to eq(90)
     end
   end
+
+  describe '#deduct' do
+    it 'deducts amount from @balance' do
+      oystercard.topup(20)
+      expect { oystercard.deduct(7) }.to change { oystercard.balance }.by -7
+    end
+  end
+
+
   describe '#topup' do
     it '#topsup @balance with the amount' do
       expect { oystercard.topup(4) }.to change { oystercard.balance }.by 4
