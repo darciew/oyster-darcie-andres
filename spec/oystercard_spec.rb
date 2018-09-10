@@ -11,6 +11,10 @@ describe Oystercard do
     it 'has a default maximum limit of 90' do
       expect(Oystercard::MAXIMUM_LIMIT).to eq(90)
     end
+
+    it 'has a default minimum limit of 1' do
+      expect(Oystercard::MINIMUM_LIMIT).to eq(1)
+    end
   end
 
   describe '#deduct' do
@@ -20,18 +24,23 @@ describe Oystercard do
     end
   end
 
-
   describe '#topup' do
-    it '#topsup @balance with the amount' do
-      expect { oystercard.topup(4) }.to change { oystercard.balance }.by 4
+
+    context 'when amount below max limit' do
+      it '#topsup @balance with the amount' do
+        expect { oystercard.topup(4) }.to change { oystercard.balance }.by 4
+      end
     end
 
-    it 'raises error if @balances exceeds maximum limit' do
-      oystercard.topup(Oystercard::MAXIMUM_LIMIT)
-      error = "Maximum value of £90 reached"
-      expect { oystercard.topup(1) }.to raise_error error
+    context 'when amount above max limit' do
+      it 'raises error' do
+        oystercard.topup(Oystercard::MAXIMUM_LIMIT)
+        error = "Maximum value of £90 reached"
+        expect { oystercard.topup(1) }.to raise_error error
+      end
     end
   end
+
   describe '#in_journey?' do
     it 'returns false on instantiation' do
       expect(oystercard.in_journey?).to eq(false)
@@ -39,9 +48,18 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-    it '@in_journey assigned true if user touches in' do
-      oystercard.touch_in
-      expect(oystercard.in_journey?).to eq(true)
+    context 'when balance above min limit' do
+      it '@in_journey assigned true' do
+        oystercard.topup(10)
+        oystercard.touch_in
+        expect(oystercard.in_journey?).to eq(true)
+      end
+    end
+
+    context 'when balance below min limit' do
+      it 'raises error if balance is < £1' do
+        expect { oystercard.touch_in }.to raise_error('Insufficient funds')
+      end
     end
   end
 
