@@ -32,4 +32,23 @@ describe Oystercard do
       expect { oystercard.topup(1) }.to raise_error error
     end
   end
+  describe '#in_journey?' do
+    it 'returns false on instantiation' do
+      expect(oystercard.in_journey?).to eq(false)
+    end
+  end
+
+  describe '#touch_in' do
+    it '@in_journey assigned true if user touches in' do
+      oystercard.touch_in
+      expect(oystercard.in_journey?).to eq(true)
+    end
+  end
+
+  describe '#touch_out' do
+    it '@in_journey assigned false if user touches out' do
+      oystercard.touch_out
+      expect(oystercard.in_journey?).to eq(false)
+    end
+  end
 end
