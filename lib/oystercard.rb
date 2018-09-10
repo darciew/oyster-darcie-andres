@@ -8,12 +8,10 @@ class Oystercard
     @balance = 0
     @limit = MAXIMUM_LIMIT
     @min_limit = MINIMUM_LIMIT
+    @journey = 1
     @in_journey = false
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
 
   def topup(amount)
     raise "Maximum value of £#{@limit} reached" if @balance + amount > @limit
@@ -31,5 +29,11 @@ class Oystercard
 
   def touch_out
     @in_journey = false
+    deduct(@journey)
+  end
+
+  private
+  def deduct(amount)
+    @balance -= amount
   end
 end
