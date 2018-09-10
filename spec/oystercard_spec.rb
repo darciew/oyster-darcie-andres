@@ -2,6 +2,7 @@ require 'oystercard'
 
 describe Oystercard do
   let(:oystercard) { Oystercard.new }
+  let(:station){ double :station }
 
   describe 'when instantiated' do
     it 'has a @balance of 0' do
@@ -42,16 +43,22 @@ describe Oystercard do
 
   describe '#touch_in' do
     context 'when balance above min limit' do
+      it 'assigns Station.obj to @origin' do
+        oystercard.topup(10)
+        oystercard.touch_in(station)
+        expect(oystercard.origin).to eq(station)
+      end
+
       it '@in_journey assigned true' do
         oystercard.topup(10)
-        oystercard.touch_in
+        oystercard.touch_in(station)
         expect(oystercard.in_journey?).to eq(true)
       end
     end
 
     context 'when balance below min limit' do
       it 'raises error if balance is < £1' do
-        expect { oystercard.touch_in }.to raise_error('Insufficient funds')
+        expect { oystercard.touch_in(station) }.to raise_error('Insufficient funds')
       end
     end
   end
@@ -64,7 +71,7 @@ describe Oystercard do
 
     it 'deducts journey cost from @balance' do
       oystercard.topup(10)
-      oystercard.touch_in
+      oystercard.touch_in(station)
       expect { oystercard.touch_out }.to change { oystercard.balance }.by -1
     end
   end
