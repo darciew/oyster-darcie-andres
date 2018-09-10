@@ -17,14 +17,7 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'deducts amount from @balance' do
-      oystercard.topup(20)
-      expect { oystercard.deduct(7) }.to change { oystercard.balance }.by -7
-    end
-  end
-
-  describe '#topup' do
+    describe '#topup' do
 
     context 'when amount below max limit' do
       it '#topsup @balance with the amount' do
@@ -67,6 +60,12 @@ describe Oystercard do
     it '@in_journey assigned false if user touches out' do
       oystercard.touch_out
       expect(oystercard.in_journey?).to eq(false)
+    end
+
+    it 'deducts journey cost from @balance' do
+      oystercard.topup(10)
+      oystercard.touch_in
+      expect { oystercard.touch_out }.to change { oystercard.balance }.by -1
     end
   end
 end
