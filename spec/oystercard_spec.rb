@@ -11,8 +11,7 @@ describe Oystercard do
     it { is_expected.to respond_to(:topup).with(1).argument }
 
     it '#topsup @balance with the amount' do
-      oystercard.topup(4)
-      expect(oystercard.balance).to eq(4)
+      expect { oystercard.topup(4) }.to change { oystercard.balance }.by 4
     end
   end
 end
